@@ -26,12 +26,15 @@ export default class Gameboard {
     }
 
     // Enemy attack
-    receiveAttack(enemycoorArr, opponentShip) {
+    receiveAttack(enemycoorArr, opponentShipName) {
+        const findShipObj = this.ships.find(
+            (ship) => ship.name === opponentShipName
+        );
         const [row, column] = enemycoorArr;
         const { board } = this;
         if (board[row][column] !== '') {
             board[row][column] += ' + Hit';
-            opponentShip.hit();
+            findShipObj.hit();
             return true;
         }
         board[row][column] += 'MISS';
