@@ -7,7 +7,8 @@
         "build": "webpack",
         "watch-webpack": "npx webpack --watch",
         "watch-sass": "sass --watch ./dist/style.scss ./dist/main.css",
-        "start": "concurrently \"npm run watch-webpack\" \"npm run watch-sass\""
+        "tailwind": "npx tailwindcss -i ./dist/tailwind.css -o ./dist/main-tailwind.css --watch",
+        "start": "concurrently \"npm run watch-webpack\" \"npm run watch-sass\" \"npm run tailwind\""
     },
     "repository": {
         "type": "git",
@@ -30,6 +31,7 @@
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-import": "^2.28.1",
         "jest": "^29.6.4",
+        "tailwindcss": "^3.3.3",
         "webpack": "^5.88.2",
         "webpack-cli": "^5.1.4"
     },
