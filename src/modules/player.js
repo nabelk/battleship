@@ -3,9 +3,13 @@ import Gameboard from './gameboard';
 export default class Player {
     constructor(turnValue) {
         this.turn = turnValue;
-        this.board = Gameboard();
+        this.board = new Gameboard();
         this.placeShip = this.board.placeShip.bind(this.board); // place ship for user
         this.receiveAttack = this.board.receiveAttack.bind(this.board);
+    }
+
+    checkAllShipSunk() {
+        return this.board.checkAllShipSunk();
     }
 
     getRandomCoor() {
