@@ -1,5 +1,27 @@
 body {
-  height: 100vh;
+  height: 90vh !important;
+}
+
+* {
+  outline: 2px dashed hsl(320, 100%, 50%);
+}
+
+.user,
+.ai {
+  display: grid;
+  grid-template-rows: repeat(10, 2fr);
+  gap: 8px;
+  border: solid 2px black;
+  padding: 5px;
+  font-weight: bolder;
+  width: 500px;
+  height: 500px;
+}
+.user > div,
+.ai > div {
+  display: grid;
+  grid-template-columns: repeat(10, 2fr);
+  gap: 8px;
 }
 
 /*# sourceMappingURL=main.css.map */
