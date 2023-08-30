@@ -4,10 +4,21 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Battleship</title>
-        <link rel="stylesheet" href="./style.css" />
+        <!-- tailwind -->
         <link rel="stylesheet" href="./main-tailwind.css" />
+        <!-- sass custom -->
+        <link rel="stylesheet" href="./main.css" />
     </head>
     <body>
+        <main class="h-full flex flex-col items-center my-10">
+            <h1 class="text-8xl mb-12">Battleship</h1>
+
+            <div class="board-section w-full flex justify-evenly">
+                <div class="user"></div>
+                <div class="ai"></div>
+            </div>
+        </main>
+
         <script src="main.js"></script>
     </body>
 </html>
