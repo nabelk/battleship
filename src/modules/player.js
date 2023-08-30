@@ -3,13 +3,16 @@ import Gameboard from './gameboard';
 export default class Player {
     constructor(turnValue) {
         this.turn = turnValue;
-        this.board = new Gameboard();
-        this.placeShip = this.board.placeShip.bind(this.board); // place ship for user
-        this.receiveAttack = this.board.receiveAttack.bind(this.board);
+        this.playerBoard = new Gameboard();
+        this.board = this.playerBoard.board;
+        this.placeShip = this.playerBoard.placeShip.bind(this.playerBoard); // place ship for user
+        this.receiveAttack = this.playerBoard.receiveAttack.bind(
+            this.playerBoard
+        );
     }
 
     checkAllShipSunk() {
-        return this.board.checkAllShipSunk();
+        return this.playerBoard.checkAllShipSunk();
     }
 
     getRandomCoor() {
@@ -21,15 +24,16 @@ export default class Player {
     }
 
     // place ship for Ai
-    ai(shipObj, orientation) {
+    aiPlaceShip(shipObj, orientation) {
         const getCoor = this.getRandomCoor();
+        const axis = orientation === 'vertical' ? getCoor[0] : getCoor[1];
         if (
-            !this.board.isShipPlacementOutOfBound(
-                getCoor[0],
+            !this.playerBoard.isShipPlacementOutOfBound(
+                axis,
                 shipObj.shipLength
             )
         )
-            return this.ai(shipObj, orientation);
+            return this.aiPlaceShip(shipObj, orientation);
         return this.placeShip(shipObj, getCoor, orientation);
     }
 }
