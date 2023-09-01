@@ -7,8 +7,8 @@ userBoard.placeShip(ships[0], [2, 2], 'horizontal');
 userBoard.placeShip(ships[1], [3, 3], 'vertical');
 
 test('Check coordinates out of bounds', () => {
-    expect(userBoard.isShipPlacementOutOfBound(7, 3)).toEqual(true);
-    expect(userBoard.isShipPlacementOutOfBound(10, 2)).toEqual(false);
+    expect(userBoard.isShipPlacementInBound(7, 3)).toEqual(true);
+    expect(userBoard.isShipPlacementInBound(10, 2)).toEqual(false);
 });
 
 test('Check attack if it is in the ship cell or not', () => {
