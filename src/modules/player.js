@@ -15,25 +15,24 @@ export default class Player {
         return this.playerBoard.checkAllShipSunk();
     }
 
-    getRandomCoor() {
-        const [x, y] = [
+    aiPlaceShip(shipObj) {
+        const coor = [
             Math.floor(Math.random() * 10),
             Math.floor(Math.random() * 10),
         ];
-        return [x, y];
-    }
+        const orientation =
+            Math.floor(Math.random() * 2) === 0 ? 'horizontal' : 'vertical';
 
-    // place ship for Ai
-    aiPlaceShip(shipObj, orientation) {
-        const getCoor = this.getRandomCoor();
-        const axis = orientation === 'vertical' ? getCoor[0] : getCoor[1];
+        // Check whether ship placement is valid or not
         if (
-            !this.playerBoard.isShipPlacementOutOfBound(
-                axis,
-                shipObj.shipLength
+            !this.playerBoard.checkCellHasShipAndShipPlacementInBound(
+                shipObj.shipLength,
+                orientation,
+                coor
             )
         )
-            return this.aiPlaceShip(shipObj, orientation);
-        return this.placeShip(shipObj, getCoor, orientation);
+            return this.aiPlaceShip(shipObj); // Recursive call
+
+        return this.placeShip(shipObj, coor, orientation);
     }
 }
