@@ -9,6 +9,10 @@ export default class Player {
         this.receiveAttack = this.playerBoard.receiveAttack.bind(
             this.playerBoard
         );
+        this.checkCellHasShipAndShipPlacementInBound =
+            this.playerBoard.checkCellHasShipAndShipPlacementInBound.bind(
+                this.playerBoard
+            );
     }
 
     checkAllShipSunk() {
@@ -26,7 +30,7 @@ export default class Player {
         // Check whether ship placement is valid or not
         if (
             !this.playerBoard.checkCellHasShipAndShipPlacementInBound(
-                shipObj.shipLength,
+                shipObj,
                 orientation,
                 coor
             )
