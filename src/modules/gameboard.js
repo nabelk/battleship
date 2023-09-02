@@ -32,8 +32,9 @@ export default class Gameboard {
         return false;
     }
 
-    checkCellHasShipAndShipPlacementInBound(shipLength, orientation, coor) {
+    checkCellHasShipAndShipPlacementInBound(shipObj, orientation, coor) {
         const [row, column] = coor;
+        const { shipLength } = shipObj;
 
         if (orientation === 'horizontal') {
             if (!this.isShipPlacementInBound(column, shipLength)) {
