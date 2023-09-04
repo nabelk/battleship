@@ -29,11 +29,24 @@ export default function Dom() {
         for (let row = 0; row < boardArr.length; row++) {
             const createRow = document.createElement('div');
 
-            boardArr[row].forEach((value, column) => {
+            boardArr[row].forEach((cell, column) => {
                 const createColumn = document.createElement('div');
-                createColumn.textContent = value.text.charAt(0);
+                createColumn.textContent = cell.name.charAt(0);
+                if (cell.isHit === false) {
+                    createColumn.className = 'bg-red-400';
+                } else if (cell.isHit === true) {
+                    createColumn.className = 'bg-green-400';
+                }
+                createColumn.setAttribute(
+                    'data-ship-name',
+                    cell.name.toLowerCase()
+                );
                 createColumn.setAttribute('data-coor', `${row}, ${column}`);
-                createColumn.className = 'flex justify-center items-center';
+                createColumn.classList.add(
+                    'flex',
+                    'justify-center',
+                    'items-center'
+                );
                 createRow.appendChild(createColumn);
             });
 
