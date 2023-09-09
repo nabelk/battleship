@@ -1,7 +1,7 @@
 export default class Gameboard {
     constructor() {
         this.board = Array.from({ length: 10 }, () =>
-            new Array(10).fill({ text: '', hasShip: false, isHit: false })
+            new Array(10).fill({ name: '', hasShip: false })
         );
         this.ships = [];
     }
@@ -60,9 +60,8 @@ export default class Gameboard {
         this.ships.push(shipObj);
         const [row, column] = coorArr;
         const info = {
-            text: shipObj.name,
+            name: shipObj.name,
             hasShip: true,
-            isHit: false,
         };
         switch (orientation) {
             case 'horizontal':
@@ -78,18 +77,19 @@ export default class Gameboard {
     }
 
     // Enemy attack
-    receiveAttack(enemycoorArr, opponentShipName) {
-        const findShipObj = this.ships.find(
-            (ship) => ship.name === opponentShipName
-        );
+    receiveAttack(enemycoorArr) {
         const [row, column] = enemycoorArr;
         const { board } = this;
-        if (board[row][column].text !== '') {
-            board[row][column] += ' + Hit';
+        if (board[row][column].name !== '') {
+            const findShipObj = this.ships.find(
+                (ship) => ship.name === board[row][column].name
+            );
+            board[row][column] = { ...board[row][column], isHit: true };
             findShipObj.hit();
+            findShipObj.isSunk();
             return true;
         }
-        board[row][column] += 'MISS';
+        board[row][column] = { ...board[row][column], isHit: false };
         return false;
     }
 

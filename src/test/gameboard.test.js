@@ -12,8 +12,8 @@ test('Check coordinates out of bounds', () => {
 });
 
 test('Check attack if it is in the ship cell or not', () => {
-    expect(userBoard.receiveAttack([2, 2], 'destroyer')).toEqual(true);
-    expect(userBoard.receiveAttack([0, 1], 'submarine')).toEqual(false);
+    expect(userBoard.receiveAttack([2, 2])).toEqual(true);
+    expect(userBoard.receiveAttack([0, 1])).toEqual(false);
 });
 
 test('Check if all the ships have sunk', () => {
