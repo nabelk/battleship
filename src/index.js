@@ -7,3 +7,5 @@ dom.renderBoard(dom.AI, '.ai');
 dom.placeShipAI();
 dom.menuEventHandler();
 dom.userBoardEventListener();
+dom.renderBoard(dom.AI, '.ai');
+dom.userOnAIBoardEventListener();
