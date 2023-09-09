@@ -13,6 +13,13 @@ export default function Dom() {
         new Ship('Carrier', 5),
     ];
 
+    const aiTargetCoor = [];
+    for (let row = 0; row < 10; row++) {
+        for (let column = 0; column < 10; column++) {
+            aiTargetCoor.push([row, column]);
+        }
+    }
+
     const select = (selector) => document.querySelector(selector);
     const selectAll = (selector) => document.querySelectorAll(selector);
 
@@ -31,16 +38,19 @@ export default function Dom() {
 
             boardArr[row].forEach((cell, column) => {
                 const createColumn = document.createElement('div');
-                createColumn.textContent = cell.name.charAt(0);
+                if (className === '.user')
+                    createColumn.textContent = cell.name.charAt(0);
                 if (cell.isHit === false) {
                     createColumn.className = 'bg-red-400';
                 } else if (cell.isHit === true) {
                     createColumn.className = 'bg-green-400';
+                } else if (cell.isHit === undefined) {
+                    createColumn.className = 'bg-gray-300';
                 }
-                createColumn.setAttribute(
-                    'data-ship-name',
-                    cell.name.toLowerCase()
-                );
+                // createColumn.setAttribute(
+                //     'data-ship-name',
+                //     cell.name.toLowerCase()
+                // );
                 createColumn.setAttribute('data-coor', `${row}, ${column}`);
                 createColumn.classList.add(
                     'flex',
@@ -54,7 +64,7 @@ export default function Dom() {
         }
     }
 
-    // User manipulation
+    // User manipulation to add ships
 
     function findShipObj(shipName) {
         return ships.find((ship) => ship.name === shipName);
@@ -74,14 +84,17 @@ export default function Dom() {
     function addShipToCells(e) {
         const info = shipInfo();
         user.placeShip(info.findShip, info.coor(e.target), info.findAxis);
+        renderBoard(user, '.user');
         select(
             `a[data-ship="${button.getAttribute('data-ship')}"]`
         ).parentElement.remove();
         if (select('.menu ul').hasChildNodes()) {
-            select(`.menu a:last-child`).click();
+            const lastAnchor = select(`.menu a:last-child`);
+            if (lastAnchor) {
+                lastAnchor.click();
+                userBoardEventListener();
+            }
         }
-        renderBoard(user, '.user');
-        userBoardEventListener();
     }
 
     function isUserCellValid(e) {
@@ -105,7 +118,7 @@ export default function Dom() {
     }
 
     function userBoardEventListener() {
-        const cells = document.querySelectorAll('.user > div > div');
+        const cells = selectAll('.user > div > div');
         cells.forEach((cell) => {
             cell.addEventListener('mouseenter', isUserCellValid);
             cell.addEventListener('mouseleave', () => {
@@ -115,6 +128,37 @@ export default function Dom() {
                     'hover:cursor-not-allowed'
                 );
             });
+        });
+    }
+
+    // User manipulation to attack AI board
+
+    function attackAIboard(e) {
+        AI.receiveAttack(
+            e.target
+                .getAttribute('data-coor')
+                .split(',')
+                .map((coorNum) => Number(coorNum))
+        );
+        renderBoard(AI, '.ai');
+        return aiAttackOnUser();
+    }
+
+    function userOnAIBoardEventListener() {
+        const aiCells = selectAll('.ai > div > div');
+        aiCells.forEach((cell) => {
+            if (
+                !cell.classList.contains('bg-red-400') &&
+                !cell.classList.contains('bg-green-400')
+            ) {
+                cell.addEventListener('mouseenter', (e) => {
+                    e.target.classList.add(
+                        'cursor-pointer',
+                        'hover:bg-blue-300'
+                    );
+                });
+                cell.addEventListener('click', attackAIboard);
+            }
         });
     }
 
@@ -147,11 +191,26 @@ export default function Dom() {
         renderBoard(AI, '.ai');
     }
 
+    function aiAttackOnUser() {
+        const randomNum = Math.floor(Math.random() * aiTargetCoor.length);
+        const [row, column] = aiTargetCoor[randomNum];
+
+        if (user.board[row][column].isHit === undefined) {
+            user.receiveAttack([row, column]);
+            aiTargetCoor.splice(randomNum, 1);
+        }
+
+        renderBoard(user, '.user');
+        userOnAIBoardEventListener();
+        return true;
+    }
+
     return {
         user,
         AI,
         menuEventHandler,
         userBoardEventListener,
+        userOnAIBoardEventListener,
         placeShipAI,
         renderBoard,
     };
