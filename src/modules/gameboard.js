@@ -81,16 +81,21 @@ export default class Gameboard {
         const [row, column] = enemycoorArr;
         const { board } = this;
         if (board[row][column].name !== '') {
-            const findShipObj = this.ships.find(
+            const findShipIdx = this.ships.findIndex(
                 (ship) => ship.name === board[row][column].name
             );
             board[row][column] = { ...board[row][column], isHit: true };
-            findShipObj.hit();
-            findShipObj.isSunk();
+            this.ships[findShipIdx].hit();
+            this.ships[findShipIdx].isSunk();
             return true;
         }
         board[row][column] = { ...board[row][column], isHit: false };
         return false;
+    }
+
+    isShipSunk(boardCell) {
+        return this.ships.find((ship) => ship.name === boardCell.name)
+            .checkSunk;
     }
 
     checkAllShipSunk() {
