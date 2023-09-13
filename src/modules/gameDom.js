@@ -1,17 +1,9 @@
 import 'flowbite';
-import Ship from './ship';
 import Player from './player';
 
 export default function Dom() {
     const user = new Player(true);
     const AI = new Player(false);
-    const ships = [
-        new Ship('Destroyer', 2),
-        new Ship('Submarine', 3),
-        new Ship('Cruiser', 3),
-        new Ship('Battleship', 4),
-        new Ship('Carrier', 5),
-    ];
 
     const aiTargetCoor = [];
     for (let row = 0; row < 10; row++) {
@@ -67,7 +59,7 @@ export default function Dom() {
     // User manipulation to add ships
 
     function findShipObj(shipName) {
-        return ships.find((ship) => ship.name === shipName);
+        return user.listOfShips.find((ship) => ship.name === shipName);
     }
 
     const shipInfo = () => ({
@@ -134,12 +126,17 @@ export default function Dom() {
     // User manipulation to attack AI board
 
     function attackAIboard(e) {
-        AI.receiveAttack(
-            e.target
-                .getAttribute('data-coor')
-                .split(',')
-                .map((coorNum) => Number(coorNum))
-        );
+        const [row, column] = e.target
+            .getAttribute('data-coor')
+            .split(',')
+            .map((coorNum) => Number(coorNum));
+        AI.receiveAttack([row, column]);
+        const attackCell = AI.board[row][column];
+        if (attackCell.name !== '') {
+            if (AI.isShipSunk(attackCell))
+                console.log(`AI's ${attackCell.name} has been SUNK`);
+        }
+        if (AI.checkAllShipSunk()) console.log('USER WON');
         renderBoard(AI, '.ai');
         return aiAttackOnUser();
     }
@@ -181,12 +178,11 @@ export default function Dom() {
                 axisDiv.setAttribute('data-axis', 'horizontal');
             }
         });
-        userBoardEventListener();
     }
 
     function placeShipAI() {
-        for (let i = 0; i < ships.length; i++) {
-            AI.aiPlaceShip(ships[i]);
+        for (let i = 0; i < AI.listOfShips.length; i++) {
+            AI.aiPlaceShip(AI.listOfShips[i]);
         }
         renderBoard(AI, '.ai');
     }
@@ -194,11 +190,19 @@ export default function Dom() {
     function aiAttackOnUser() {
         const randomNum = Math.floor(Math.random() * aiTargetCoor.length);
         const [row, column] = aiTargetCoor[randomNum];
+        const attackCell = user.board[row][column];
 
-        if (user.board[row][column].isHit === undefined) {
+        if (attackCell.isHit === undefined) {
             user.receiveAttack([row, column]);
             aiTargetCoor.splice(randomNum, 1);
         }
+
+        if (attackCell.name !== '') {
+            if (user.isShipSunk(attackCell))
+                console.log(`User's ${attackCell.name} has been SUNK`);
+        }
+
+        if (user.checkAllShipSunk()) console.log('AI WON');
 
         renderBoard(user, '.user');
         userOnAIBoardEventListener();
