@@ -1,10 +1,12 @@
 import Gameboard from './gameboard';
+import Ship from './ship';
 
 export default class Player {
     constructor(turnValue) {
         this.turn = turnValue;
         this.playerBoard = new Gameboard();
         this.board = this.playerBoard.board;
+        this.isShipSunk = this.playerBoard.isShipSunk.bind(this.playerBoard);
         this.placeShip = this.playerBoard.placeShip.bind(this.playerBoard); // place ship for user
         this.receiveAttack = this.playerBoard.receiveAttack.bind(
             this.playerBoard
@@ -13,6 +15,13 @@ export default class Player {
             this.playerBoard.checkCellHasShipAndShipPlacementInBound.bind(
                 this.playerBoard
             );
+        this.listOfShips = [
+            new Ship('Destroyer', 2),
+            new Ship('Submarine', 3),
+            new Ship('Cruiser', 3),
+            new Ship('Battleship', 4),
+            new Ship('Carrier', 5),
+        ];
     }
 
     checkAllShipSunk() {
