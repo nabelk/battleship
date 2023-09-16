@@ -2,8 +2,8 @@ import Gameboard from './gameboard';
 import Ship from './ship';
 
 export default class Player {
-    constructor(turnValue) {
-        this.turn = turnValue;
+    constructor(name) {
+        this.name = name;
         this.playerBoard = new Gameboard();
         this.board = this.playerBoard.board;
         this.isShipSunk = this.playerBoard.isShipSunk.bind(this.playerBoard);
