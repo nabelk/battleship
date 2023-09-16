@@ -2,8 +2,8 @@ import 'flowbite';
 import Player from './player';
 
 export default function Dom() {
-    const user = new Player(true);
-    const AI = new Player(false);
+    const user = new Player('');
+    const AI = new Player('AI');
 
     const aiTargetCoor = [];
     for (let row = 0; row < 10; row++) {
@@ -19,6 +19,19 @@ export default function Dom() {
     const menuSection = '.menu';
     const button = select(`${menuSection} > form > button > span`);
     const axisDiv = select(`${menuSection} div:last-child`);
+
+    // Update game div
+
+    function updateGameProgress(content) {
+        select('.update').textContent = content;
+    }
+
+    // Winner modal
+
+    function displayWinnerModal(winner) {
+        select(`button[data-modal-target="staticModal"]`).click();
+        select('.winner-modal').textContent = `${winner.toUpperCase()} WON!`;
+    }
 
     //  Render board function
     function renderBoard(player, className) {
@@ -39,10 +52,6 @@ export default function Dom() {
                 } else if (cell.isHit === undefined) {
                     createColumn.className = 'bg-gray-300';
                 }
-                // createColumn.setAttribute(
-                //     'data-ship-name',
-                //     cell.name.toLowerCase()
-                // );
                 createColumn.setAttribute('data-coor', `${row}, ${column}`);
                 createColumn.classList.add(
                     'flex',
@@ -85,6 +94,11 @@ export default function Dom() {
             if (lastAnchor) {
                 lastAnchor.click();
                 userBoardEventListener();
+            } else {
+                select(menuSection).remove();
+                select('.ai').classList.remove('hidden');
+                select('.ai').style.display = 'grid';
+                updateGameProgress(`${user.name}'s Turn!`);
             }
         }
     }
@@ -130,15 +144,28 @@ export default function Dom() {
             .getAttribute('data-coor')
             .split(',')
             .map((coorNum) => Number(coorNum));
-        AI.receiveAttack([row, column]);
         const attackCell = AI.board[row][column];
-        if (attackCell.name !== '') {
-            if (AI.isShipSunk(attackCell))
-                console.log(`AI's ${attackCell.name} has been SUNK`);
+        if (AI.receiveAttack([row, column])) {
+            updateGameProgress(`It's a hit on AI ship!`);
+            if (attackCell.name !== '') {
+                if (AI.isShipSunk(attackCell))
+                    setTimeout(() => {
+                        updateGameProgress(
+                            `AI's ${attackCell.name} has been SUNK`
+                        );
+                    }, 500);
+            }
+        } else {
+            updateGameProgress(`It's a MISS!`);
         }
-        if (AI.checkAllShipSunk()) console.log('USER WON');
         renderBoard(AI, '.ai');
-        return aiAttackOnUser();
+
+        if (AI.checkAllShipSunk()) return displayWinnerModal(user.name);
+        setTimeout(() => {
+            updateGameProgress(`It's AI turn!`);
+        }, 1500);
+
+        setTimeout(() => aiAttackOnUser(), 2000);
     }
 
     function userOnAIBoardEventListener() {
@@ -191,21 +218,33 @@ export default function Dom() {
         const randomNum = Math.floor(Math.random() * aiTargetCoor.length);
         const [row, column] = aiTargetCoor[randomNum];
         const attackCell = user.board[row][column];
-
         if (attackCell.isHit === undefined) {
-            user.receiveAttack([row, column]);
-            aiTargetCoor.splice(randomNum, 1);
+            setTimeout(() => {
+                if (user.receiveAttack([row, column])) {
+                    updateGameProgress(`It's a hit on ${user.name} ship!`);
+                    if (attackCell.name !== '') {
+                        if (user.isShipSunk(attackCell)) {
+                            setTimeout(() => {
+                                updateGameProgress(
+                                    `${user.name}'s ${attackCell.name} has been SUNK`
+                                );
+                            }, 800);
+                        }
+                    }
+                } else {
+                    updateGameProgress(`It's a MISS!`);
+                }
+                renderBoard(user, '.user');
+                aiTargetCoor.splice(randomNum, 1);
+                if (user.checkAllShipSunk()) return displayWinnerModal(AI.name);
+            }, 200);
         }
 
-        if (attackCell.name !== '') {
-            if (user.isShipSunk(attackCell))
-                console.log(`User's ${attackCell.name} has been SUNK`);
-        }
+        setTimeout(() => {
+            userOnAIBoardEventListener();
+            updateGameProgress(`${user.name}'s Turn!`);
+        }, 1800);
 
-        if (user.checkAllShipSunk()) console.log('AI WON');
-
-        renderBoard(user, '.user');
-        userOnAIBoardEventListener();
         return true;
     }
 
