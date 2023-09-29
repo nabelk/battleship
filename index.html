@@ -10,19 +10,26 @@
         <link rel="stylesheet" href="./main.css" />
     </head>
     <body>
-        <main class="h-full flex flex-col items-center my-10">
-            <h1 class="text-8xl mb-12">Battleship</h1>
+        <main class="h-full w-full flex flex-col items-center my-10 font-mono">
+            <h1 class="sm:text-8xl mb-12 text-sky-300 text-5xl">Battleship</h1>
 
-            <div class="update text-3xl mb-12">Place Your Ships</div>
+            <div class="update text-3xl mb-12 text-sky-300 text-center">
+                Place Your Ships
+            </div>
 
-            <div class="board-section w-full flex justify-evenly">
+            <div class="board-name w-full flex justify-evenly gap-48">
+                <h1 class="user-name hidden text-4xl text-sky-300"></h1>
+                <h1 class="ai-name hidden text-4xl text-sky-300">AI Board</h1>
+            </div>
+
+            <div class="board-section w-full h-full flex justify-evenly mb-12">
                 <div class="user"></div>
                 <div class="ai hidden"></div>
             </div>
 
-            <div class="menu h-full w-full flex items-center justify-center">
+            <div class="menu h-full w-full flex justify-center">
                 <form
-                    class="w-full h-full flex justify-center items-center"
+                    class="w-full h-full flex justify-center"
                     style="gap: 30px"
                 >
                     <button
@@ -30,7 +37,7 @@
                         data-dropdown-toggle="dropdownDelay"
                         data-dropdown-delay="300"
                         data-dropdown-trigger="hover"
-                        class="h-16 w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-evenly dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        class="h-12 sm:h-16 w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-evenly dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         type="button"
                     >
                         <span data-ship="Destroyer">Destroyer</span>
@@ -97,7 +104,7 @@
                     </div>
                     <div
                         data-axis="horizontal"
-                        class="h-16 w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
+                        class="h-12 sm:h-16 w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
                     >
                         Horizontal
                     </div>
