@@ -16,6 +16,9 @@ playerform.addEventListener('submit', (e) => {
     dom.user.name =
         e.target.name.value.charAt(0).toUpperCase() +
         e.target.name.value.slice(1).toLowerCase();
+    document.querySelector(
+        'h1.user-name'
+    ).textContent = `${dom.user.name} Board`;
     playerform.closest('#player-name-modal').remove();
     document.querySelector('.modal-backdrop').remove();
 });
