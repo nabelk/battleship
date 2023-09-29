@@ -1,17 +1,16 @@
 body {
-    height: 90vh !important;
+    height: 100vh !important;
+    overflow: auto;
+    background-color: #292f36;
 }
 
-* {
+/* * {
     outline: 2px dashed hsl(320 100% 50); // debug
-}
+} */
 
 .user,
 .ai {
     grid-template-rows: repeat(10, 2fr);
-    gap: 8px;
-    border: solid 2px black;
-    padding: 5px;
     font-weight: bolder;
     width: 500px;
     height: 500px;
@@ -19,7 +18,16 @@ body {
     > div {
         display: grid;
         grid-template-columns: repeat(10, 2fr);
-        gap: 8px;
+        background-color: #000000;
+        background-image: linear-gradient(147deg, #000000 0%, #04619f 74%);
+        > div {
+            border: solid 2px rgb(125 211 252);
+        }
+    }
+
+    @media only screen and (max-width: 500px) {
+        width: 95%;
+        height: 45vh;
     }
 }
 
