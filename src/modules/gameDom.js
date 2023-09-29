@@ -33,9 +33,55 @@ export default function Dom() {
         select('.winner-modal').textContent = `${winner.toUpperCase()} WON!`;
     }
 
+    // Cell Color for Ships
+
+    function setShipCellColor(columnEle, shipName) {
+        switch (shipName) {
+            case 'Battleship':
+                columnEle.style.backgroundColor = '#333333';
+                break;
+            case 'Carrier':
+                columnEle.style.backgroundColor = '#808080';
+                break;
+            case 'Submarine':
+                columnEle.style.backgroundColor = '#363636';
+                break;
+            case 'Destroyer':
+                columnEle.style.backgroundColor = '#708090';
+                break;
+            case 'Cruiser':
+                columnEle.style.backgroundColor = '#D3D3D3';
+                break;
+            default:
+        }
+    }
+
+    // Board display manipulation for small width window size
+
+    function checkMediaQueryForBoardDisplay() {
+        if (window.matchMedia('(max-width: 1130px)').matches) {
+            if (select('.update').textContent !== "It's AI turn!") {
+                select('.user').style.display = 'none';
+                select('.user-name').style.display = 'none';
+                select('.ai').style.display = 'grid';
+                select('.ai-name').style.display = 'block';
+            } else {
+                select('.ai').style.display = 'none';
+                select('.ai-name').style.display = 'none';
+                select('.user').style.display = 'grid';
+                select('.user-name').style.display = 'block';
+            }
+        } else {
+            select('.ai').style.display = 'grid';
+            select('.user').style.display = 'grid';
+            select('.ai-name').style.display = 'block';
+            select('.user-name').style.display = 'block';
+        }
+    }
+
     //  Render board function
     function renderBoard(player, className) {
-        document.querySelector(`${className}`).textContent = '';
+        select(`${className}`).textContent = '';
         const boardArr = player.board;
 
         for (let row = 0; row < boardArr.length; row++) {
@@ -43,14 +89,15 @@ export default function Dom() {
 
             boardArr[row].forEach((cell, column) => {
                 const createColumn = document.createElement('div');
-                if (className === '.user')
-                    createColumn.textContent = cell.name.charAt(0);
+                if (className === '.user') {
+                    setShipCellColor(createColumn, cell.name);
+                }
                 if (cell.isHit === false) {
                     createColumn.className = 'bg-red-400';
+                    createColumn.innerHTML = '&#x26AB;';
                 } else if (cell.isHit === true) {
-                    createColumn.className = 'bg-green-400';
-                } else if (cell.isHit === undefined) {
-                    createColumn.className = 'bg-gray-300';
+                    createColumn.className = 'bg-green-700';
+                    createColumn.innerHTML = '&#x1F4A5;';
                 }
                 createColumn.setAttribute('data-coor', `${row}, ${column}`);
                 createColumn.classList.add(
@@ -61,7 +108,7 @@ export default function Dom() {
                 createRow.appendChild(createColumn);
             });
 
-            document.querySelector(className).appendChild(createRow);
+            select(className).appendChild(createRow);
         }
     }
 
@@ -96,9 +143,16 @@ export default function Dom() {
                 userBoardEventListener();
             } else {
                 select(menuSection).remove();
+                selectAll('.board-name > h1').forEach((ele) =>
+                    ele.classList.remove('hidden')
+                );
                 select('.ai').classList.remove('hidden');
                 select('.ai').style.display = 'grid';
                 updateGameProgress(`${user.name}'s Turn!`);
+                checkMediaQueryForBoardDisplay();
+                window.onresize = function () {
+                    checkMediaQueryForBoardDisplay();
+                };
             }
         }
     }
@@ -112,7 +166,7 @@ export default function Dom() {
                 info.coor(e.target)
             )
         ) {
-            e.target.classList.add('hover:bg-green-500');
+            e.target.classList.add('hover:bg-green-600');
             e.target.addEventListener('click', addShipToCells);
         } else {
             e.target.classList.add(
@@ -129,7 +183,7 @@ export default function Dom() {
             cell.addEventListener('mouseenter', isUserCellValid);
             cell.addEventListener('mouseleave', () => {
                 cell.classList.remove(
-                    'hover:bg-green-500',
+                    'hover:bg-green-600',
                     'hover:bg-red-500',
                     'hover:cursor-not-allowed'
                 );
@@ -147,13 +201,10 @@ export default function Dom() {
         const attackCell = AI.board[row][column];
         if (AI.receiveAttack([row, column])) {
             updateGameProgress(`It's a hit on AI ship!`);
-            if (attackCell.name !== '') {
-                if (AI.isShipSunk(attackCell))
-                    setTimeout(() => {
-                        updateGameProgress(
-                            `AI's ${attackCell.name} has been SUNK`
-                        );
-                    }, 500);
+            if (attackCell.name !== '' && AI.isShipSunk(attackCell)) {
+                setTimeout(() => {
+                    updateGameProgress(`AI's ${attackCell.name} has been SUNK`);
+                }, 500);
             }
         } else {
             updateGameProgress(`It's a MISS!`);
@@ -163,6 +214,7 @@ export default function Dom() {
         if (AI.checkAllShipSunk()) return displayWinnerModal(user.name);
         setTimeout(() => {
             updateGameProgress(`It's AI turn!`);
+            checkMediaQueryForBoardDisplay();
         }, 1500);
 
         setTimeout(() => aiAttackOnUser(), 2000);
@@ -173,7 +225,7 @@ export default function Dom() {
         aiCells.forEach((cell) => {
             if (
                 !cell.classList.contains('bg-red-400') &&
-                !cell.classList.contains('bg-green-400')
+                !cell.classList.contains('bg-green-700')
             ) {
                 cell.addEventListener('mouseenter', (e) => {
                     e.target.classList.add(
@@ -222,14 +274,12 @@ export default function Dom() {
             setTimeout(() => {
                 if (user.receiveAttack([row, column])) {
                     updateGameProgress(`It's a hit on ${user.name} ship!`);
-                    if (attackCell.name !== '') {
-                        if (user.isShipSunk(attackCell)) {
-                            setTimeout(() => {
-                                updateGameProgress(
-                                    `${user.name}'s ${attackCell.name} has been SUNK`
-                                );
-                            }, 800);
-                        }
+                    if (attackCell.name !== '' && user.isShipSunk(attackCell)) {
+                        setTimeout(() => {
+                            updateGameProgress(
+                                `${user.name}'s ${attackCell.name} has been SUNK`
+                            );
+                        }, 800);
                     }
                 } else {
                     updateGameProgress(`It's a MISS!`);
@@ -243,7 +293,8 @@ export default function Dom() {
         setTimeout(() => {
             userOnAIBoardEventListener();
             updateGameProgress(`${user.name}'s Turn!`);
-        }, 1800);
+            checkMediaQueryForBoardDisplay();
+        }, 2000);
 
         return true;
     }
@@ -256,5 +307,6 @@ export default function Dom() {
         userOnAIBoardEventListener,
         placeShipAI,
         renderBoard,
+        checkMediaQueryForBoardDisplay,
     };
 }
