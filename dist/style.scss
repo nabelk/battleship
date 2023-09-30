@@ -29,6 +29,10 @@ body {
         width: 95%;
         height: 45vh;
     }
+
+    @media only screen and (max-width: 320px) {
+        height: 60vh;
+    }
 }
 
 .user {
