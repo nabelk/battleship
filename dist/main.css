@@ -32,6 +32,12 @@ body {
     height: 45vh;
   }
 }
+@media only screen and (max-width: 320px) {
+  .user,
+  .ai {
+    height: 60vh;
+  }
+}
 
 .user {
   display: grid;
